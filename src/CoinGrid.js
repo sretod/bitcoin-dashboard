@@ -17,7 +17,7 @@ const Item = styled(Paper)(({ theme }) => ({
   }));
 
 
-const CoinGrid = ({id,name,image,price}) => {
+const CoinGrid = ({id,name,image,price, priceChange}) => {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -33,7 +33,14 @@ const CoinGrid = ({id,name,image,price}) => {
      
     <div >
       
-      <Item onClick={handleClickOpen}  key={id}  sx={{bacgroudColor:'#ff0000', fontSize: '2vw', display:'flex',justifyContent:'center', height:'20vw',alignItems:'center', cursor:'pointer'}}><Avatar alt="btc symbo image" src={image} sx={{marginRight:'0.5vw'}}></Avatar> <div>{name}</div></Item>
+      <Item onClick={handleClickOpen}  key={id}  sx={{bacgroudColor:'#ff0000', fontSize: '2vw', display:'flex',justifyContent:'space-evenly', height:'20vw',alignItems:'center', cursor:'pointer'}}><Avatar alt="btc symbo image" src={image} sx={{marginRight:'0.5vw'}}></Avatar>
+       <div>{name}</div><div>{priceChange < 0 ?(
+                        <p className="coin-percent red">{priceChange.toFixed(2)}%</p>
+                    ) :(
+                        <p className="coin-percent green">{priceChange.toFixed(2)}%</p>
+                    )
+                       
+                    }</div></Item>
      
       <Dialog
         open={open}
@@ -53,7 +60,7 @@ const CoinGrid = ({id,name,image,price}) => {
         <DialogActions>
          
           <Button onClick={handleClose} autoFocus>
-            Close
+            ok
           </Button>
         </DialogActions>
       </Dialog>
