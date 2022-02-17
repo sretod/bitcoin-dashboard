@@ -8,6 +8,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Tooltip from "@mui/material/Tooltip";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -27,35 +29,36 @@ const CoinGrid = ({ id, name, image, price, priceChange }) => {
     setOpen(false);
   };
   return (
-    <div>
-      <Item
-        onClick={handleClickOpen}
-        key={id}
-        sx={{
-          bacgroudColor: "#ff0000",
-          fontSize: "1vw",
-          display: "flex",
-          justifyContent: "space-evenly",
-          height: "10vw",
-          alignItems: "center",
-          cursor: "pointer",
-        }}
-      >
-        <Avatar
-          alt="btc symbo image"
-          src={image}
-          sx={{ marginRight: "0.5vw" }}
-        ></Avatar>
-        <div>{name}</div>
-        <div>
-          {priceChange < 0 ? (
-            <p className="coin-percent red">{priceChange.toFixed(2)}%</p>
-          ) : (
-            <p className="coin-percent green">{priceChange.toFixed(2)}%</p>
-          )}
-        </div>
-      </Item>
-
+    <Box>
+      <Tooltip title={name} placement="top" arrow>
+        <Item
+          onClick={handleClickOpen}
+          key={id+'grid'+name}
+          sx={{
+            bacgroudColor: "#ff0000",
+            fontSize: "1.5vw",
+            display: "flex",
+            justifyContent: "space-evenly",
+            height: "10vw",
+            alignItems: "center",
+            cursor: "pointer",
+          }}
+        >
+          <Avatar
+            alt="btc symbo image"
+            src={image}
+            sx={{ width: "2.5vw", height: "2.5vw" }}
+          ></Avatar>
+          {name}
+          <Box>
+            {priceChange < 0 ? (
+              <p className=" red">{priceChange.toFixed(2)}%</p>
+            ) : (
+              <p className=" green">{priceChange.toFixed(2)}%</p>
+            )}
+          </Box>
+        </Item>
+      </Tooltip>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -74,7 +77,7 @@ const CoinGrid = ({ id, name, image, price, priceChange }) => {
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </Box>
   );
 };
 

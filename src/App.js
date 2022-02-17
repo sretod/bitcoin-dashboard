@@ -10,7 +10,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import TablePagination from "@mui/material/TablePagination";
-import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import { createTheme } from "@mui/material/styles";
 import ViewListIcon from "@mui/icons-material/ViewList";
@@ -22,18 +21,25 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import { styled, alpha } from "@mui/material/styles";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import InputBase from "@mui/material/InputBase";
+import ManageSearch from "@mui/icons-material/ManageSearch";
+import SearchIcon from "@mui/icons-material/Search";
+import Tooltip from "@mui/material/Tooltip";
+import TableBody from "@mui/material/TableBody";
 
 function App() {
   const [coins, setCoins] = useState([]);
   const [search, setSearch] = useState("");
   const [isShow, setIsShow] = useState(false);
   const [isTyped, setIsTyped] = useState(false);
-  const [coinsLenght, setCoinsLenght] = useState(48);
 
   const handleChange = (event) => {
-   
     setrowsPerPage(event.target.value);
-
   };
 
   const theme = createTheme({
@@ -50,17 +56,19 @@ function App() {
   useEffect(() => {
     axios
       .get(
-        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=" +
-          coinsLenght +
-          "&page=1&sparkline=false"
+        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=48& page=1 & sparkline=false"
       )
       .then((res) => {
         setCoins(res.data);
       })
-      .catch((error) => console.log(error));
-  }, [coinsLenght]);
+      .catch((error) => {
+        console.log(error);
+        alert("You dont have internet connection");
+      });
+  }, []);
 
   const InputChangeUpdate = (e) => {
+    console.log(e.target.value);
     setSearch(e.target.value);
     setIsTyped(!isTyped);
     if (isShow) {
@@ -73,8 +81,7 @@ function App() {
     }
   };
 
-  const [page, setPage] = React.useState(0);
-  //const rowsPerPage = 12;
+  const [page, setPage] = useState(0);
   const [rowsPerPage, setrowsPerPage] = useState(12);
   const coinssliced = coins.slice(
     page * rowsPerPage,
@@ -97,13 +104,11 @@ function App() {
     setPage(newPage);
   };
 
-  const [gridview, setGridView] = React.useState("");
+  const [gridview, setGridView] = React.useState("list");
 
   useEffect(() => {
-    if (gridview !== "list" || gridview === "") {
-      setGridView(localStorage.getItem("Toggle"));
-    } else {
-      setGridView("list");
+    if (localStorage.getItem("Toggle") === "grid") {
+      setGridView("grid");
     }
   }, [gridview]);
 
@@ -113,23 +118,95 @@ function App() {
     localStorage.setItem("Toggle", nextView);
   };
 
+  const Search = styled("div")(({ theme }) => ({
+    position: "relative",
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: alpha(theme.palette.common.white, 0.15),
+    "&:hover": {
+      backgroundColor: alpha(theme.palette.common.white, 0.25),
+    },
+    marginLeft: 0,
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: theme.spacing(1),
+      width: "auto",
+    },
+  }));
+
+  const SearchIconWrapper = styled("div")(({ theme }) => ({
+    padding: theme.spacing(0, 2),
+    height: "100%",
+    position: "absolute",
+    pointerEvents: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  }));
+
+  const StyledInputBase = styled(InputBase)(({ theme }) => ({
+    color: "inherit",
+    "& .MuiInputBase-input": {
+      padding: theme.spacing(1, 1, 1, 0),
+      // vertical padding + font size from searchIcon
+      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+      transition: theme.transitions.create("width"),
+      width: "100%",
+      [theme.breakpoints.up("sm")]: {
+        width: "35ch",
+      },
+    },
+  }));
+
   return (
     <Box className="coin-app">
-      <div className="coin-search">
-        <h1 className="coin-text">Search current</h1>
-        <form>
-          <input
-            type="text"
-            placeholder="Search curent page"
-            className="coin-input"
-            onChange={InputChangeUpdate}
-          />
-          <Button onClick={searchAll} variant="contained" sx={{ ml: "10px" }}>
-            Search all
-          </Button>
-        </form>
-      </div>
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+            >
+              Crypto Dashboard
+            </Typography>
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Search current page"
+                inputProps={{ "aria-label": "search" }}
+                onChange={InputChangeUpdate}
+                value={search}
+                autoFocus
+              />
+            </Search>
+            <Tooltip title="Search all" placement="bottom" arrow>
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                sx={{ mr: 2, ml: 2 }}
+                onClick={searchAll}
+              >
+                <ManageSearch />
+              </IconButton>
+            </Tooltip>
+          </Toolbar>
+        </AppBar>
+      </Box>
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          paddingLeft: "16px",
+          paddingRight: "16px",
+          paddingTop: "8px",
+        }}
+      >
         <Box sx={{ maxWidth: 100, marginBottom: "1vw" }}>
           <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
             <InputLabel id="coin-select-label">Coins fetched</InputLabel>
@@ -163,7 +240,7 @@ function App() {
         </ToggleButtonGroup>
       </Box>
       {gridview === "list" ? (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{ paddingLeft: "16px", paddingRight: "16px"}}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
@@ -173,42 +250,48 @@ function App() {
                 <TableCell align="left">Volume</TableCell>
                 <TableCell align="left">Current price</TableCell>
                 <TableCell align="left">Price change</TableCell>
-                <TableCell align="left">MArket cap</TableCell>
+                <TableCell align="left">Market cap</TableCell>
               </TableRow>
             </TableHead>
-            {isShow
-              ? filteredCoinsAll.map((coin) => {
-                  return (
-                    <CoinTable
-                      key={coin.id}
-                      name={coin.name}
-                      image={coin.image}
-                      symbol={coin.symbol}
-                      marketcap={coin.market_cap}
-                      price={coin.current_price}
-                      priceChange={coin.price_change_percentage_24h}
-                      volume={coin.total_volume}
-                    />
-                  );
-                })
-              : filteredCoins.map((coin) => {
-                  return (
-                    <CoinTable
-                      key={coin.id}
-                      name={coin.name}
-                      image={coin.image}
-                      symbol={coin.symbol}
-                      marketcap={coin.market_cap}
-                      price={coin.current_price}
-                      priceChange={coin.price_change_percentage_24h}
-                      volume={coin.total_volume}
-                    />
-                  );
-                })}
+            <TableBody >
+              {isShow
+                ? filteredCoinsAll.map((coin) => {
+                    return (
+                      <CoinTable
+                        key={coin.id}
+                        name={coin.name}
+                        image={coin.image}
+                        symbol={coin.symbol}
+                        marketcap={coin.market_cap}
+                        price={coin.current_price}
+                        priceChange={coin.price_change_percentage_24h}
+                        volume={coin.total_volume}
+                      />
+                    );
+                  })
+                : filteredCoins.map((coin) => {
+                    return (
+                      <CoinTable
+                        key={coin.id}
+                        name={coin.name}
+                        image={coin.image}
+                        symbol={coin.symbol}
+                        marketcap={coin.market_cap}
+                        price={coin.current_price}
+                        priceChange={coin.price_change_percentage_24h}
+                        volume={coin.total_volume}
+                      />
+                    );
+                  })}
+            </TableBody>
           </Table>
         </TableContainer>
       ) : !isShow ? (
-        <Grid container spacing={2}>
+        <Grid
+          container
+          spacing={2}
+          sx={{ paddingLeft: "16px", paddingRight: "16px" }}
+        >
           {filteredCoins.map((coin) => {
             return (
               <Grid item xs={3} md={2}>
@@ -225,15 +308,15 @@ function App() {
         </Grid>
       ) : (
         <Grid container spacing={2}>
-          {filteredCoinsAll.map(({id,name,image,current_price,price_change_percentage_24h}) => {
+          {filteredCoinsAll.map((coin) => {
             return (
               <Grid item xs={3}>
                 <CoinGrid
-                  key={id}
-                  name={name}
-                  image={image}
-                  price={current_price}
-                  priceChange={price_change_percentage_24h}
+                  key={coin.id}
+                  name={coin.name}
+                  image={coin.image}
+                  price={coin.current_price}
+                  priceChange={coin.price_change_percentage_24h}
                 />
               </Grid>
             );
@@ -249,6 +332,7 @@ function App() {
           rowsPerPage={rowsPerPage}
           rowsPerPageOptions={[]}
           backIconButtonProps={{ className: theme.primary }}
+          component="div"
         />
       ) : (
         <></>
