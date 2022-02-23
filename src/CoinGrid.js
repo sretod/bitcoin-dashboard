@@ -18,7 +18,7 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const CoinGrid = ({ id, name, image, price, priceChange }) => {
+const CoinGrid = ({ id, name, image, price, priceChange, marketcap }) => {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -30,10 +30,10 @@ const CoinGrid = ({ id, name, image, price, priceChange }) => {
   };
   return (
     <Box>
-      <Tooltip title={name} placement="top" arrow>
+      <Tooltip title="Click for more info" placement="top" arrow>
         <Item
           onClick={handleClickOpen}
-          key={id+'grid'+name}
+          key={id}
           sx={{
             bacgroudColor: "#ff0000",
             fontSize: "1.5vw",
@@ -42,6 +42,7 @@ const CoinGrid = ({ id, name, image, price, priceChange }) => {
             height: "10vw",
             alignItems: "center",
             cursor: "pointer",
+            flexDirection:"column"
           }}
         >
           <Avatar
@@ -68,7 +69,8 @@ const CoinGrid = ({ id, name, image, price, priceChange }) => {
         <DialogTitle id="alert-dialog-title">{name}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Current price is: {price} $
+            <p>Current price is: {price}$</p>
+            <p>Market cap: {marketcap}$</p>
           </DialogContentText>
         </DialogContent>
         <DialogActions>

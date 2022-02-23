@@ -31,6 +31,7 @@ import ManageSearch from "@mui/icons-material/ManageSearch";
 import SearchIcon from "@mui/icons-material/Search";
 import Tooltip from "@mui/material/Tooltip";
 import TableBody from "@mui/material/TableBody";
+import LoopIcon from '@mui/icons-material/Loop';
 
 function App() {
   const [coins, setCoins] = useState([]);
@@ -54,21 +55,26 @@ function App() {
   });
 
   useEffect(() => {
-    axios
-      .get(
-        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=48& page=1 & sparkline=false"
-      )
-      .then((res) => {
-        setCoins(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-        alert("You dont have internet connection");
-      });
+
+      apiCallFunction();
   }, []);
 
+  const apiCallFunction = () => {
+    
+    axios
+    .get(
+      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=48& page=1 & sparkline=false"
+    )
+    .then((res) => {
+      setCoins(res.data);
+    })
+    .catch((error) => {
+      console.log(error);
+      alert("You dont have internet connection");
+    });
+  }
+
   const InputChangeUpdate = (e) => {
-    console.log(e.target.value);
     setSearch(e.target.value);
     setIsTyped(!isTyped);
     if (isShow) {
@@ -170,6 +176,18 @@ function App() {
             >
               Crypto Dashboard
             </Typography>
+            <Tooltip title="Update crypto data" placement="bottom" arrow>
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                sx={{ mr: 2, ml: 2 }}
+                onClick={apiCallFunction}
+              >
+                <LoopIcon/>
+              </IconButton>
+            </Tooltip>
             <Search>
               <SearchIconWrapper>
                 <SearchIcon />
@@ -182,7 +200,7 @@ function App() {
                 autoFocus
               />
             </Search>
-            <Tooltip title="Search all" placement="bottom" arrow>
+            <Tooltip title="Search all pages" placement="bottom" arrow>
               <IconButton
                 size="large"
                 edge="start"
@@ -301,6 +319,7 @@ function App() {
                   image={coin.image}
                   price={coin.current_price}
                   priceChange={coin.price_change_percentage_24h}
+                  marketcap={coin.market_cap}
                 />
               </Grid>
             );
@@ -317,6 +336,7 @@ function App() {
                   image={coin.image}
                   price={coin.current_price}
                   priceChange={coin.price_change_percentage_24h}
+                  marketcap={coin.market_cap}
                 />
               </Grid>
             );

@@ -32,9 +32,9 @@ const Rows = ({
         <Box sx={{ ml: 3 }}>{name}</Box>
       </TableCell>
       <TableCell align="left">{symbol}</TableCell>
-      <TableCell align="left">${price}</TableCell>
+      <TableCell align="left">{price}$</TableCell>
 
-      <TableCell align="left">${volume.toLocaleString()}</TableCell>
+      <TableCell align="left">{volume.toLocaleString()}$</TableCell>
 
       <TableCell align="left">
         {" "}
@@ -48,7 +48,7 @@ const Rows = ({
       <TableCell align="left">{priceChange}</TableCell>
       <TableCell align="left">
         {" "}
-         ${marketcap.toLocaleString()}
+         {marketcap.toLocaleString()}$
       </TableCell>
     </TableRow>
   );
