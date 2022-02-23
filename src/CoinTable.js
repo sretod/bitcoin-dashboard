@@ -4,7 +4,7 @@ import TableRow from "@mui/material/TableRow";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 
-const Rows = ({
+const CoinTable = ({
   id,
   name,
   image,
@@ -54,4 +54,4 @@ const Rows = ({
   );
 };
 
-export default Rows;
+export default CoinTable;

@@ -11,7 +11,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import TablePagination from "@mui/material/TablePagination";
 import Box from "@mui/material/Box";
-import { createTheme } from "@mui/material/styles";
+
 import ViewListIcon from "@mui/icons-material/ViewList";
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import ToggleButton from "@mui/material/ToggleButton";
@@ -31,7 +31,7 @@ import ManageSearch from "@mui/icons-material/ManageSearch";
 import SearchIcon from "@mui/icons-material/Search";
 import Tooltip from "@mui/material/Tooltip";
 import TableBody from "@mui/material/TableBody";
-import LoopIcon from '@mui/icons-material/Loop';
+import LoopIcon from "@mui/icons-material/Loop";
 
 function App() {
   const [coins, setCoins] = useState([]);
@@ -43,36 +43,23 @@ function App() {
     setrowsPerPage(event.target.value);
   };
 
-  const theme = createTheme({
-    palette: {
-      primary: {
-        main: "#808080",
-      },
-      secondary: {
-        main: "#f44336",
-      },
-    },
-  });
-
   useEffect(() => {
-
-      apiCallFunction();
+    apiCallFunction();
   }, []);
 
   const apiCallFunction = () => {
-    
     axios
-    .get(
-      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=48& page=1 & sparkline=false"
-    )
-    .then((res) => {
-      setCoins(res.data);
-    })
-    .catch((error) => {
-      console.log(error);
-      alert("You dont have internet connection");
-    });
-  }
+      .get(
+        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=48& page=1 & sparkline=false"
+      )
+      .then((res) => {
+        setCoins(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("You dont have internet connection");
+      });
+  };
 
   const InputChangeUpdate = (e) => {
     setSearch(e.target.value);
@@ -110,7 +97,7 @@ function App() {
     setPage(newPage);
   };
 
-  const [gridview, setGridView] = React.useState("list");
+  const [gridview, setGridView] = useState("list");
 
   useEffect(() => {
     if (localStorage.getItem("Toggle") === "grid") {
@@ -185,7 +172,7 @@ function App() {
                 sx={{ mr: 2, ml: 2 }}
                 onClick={apiCallFunction}
               >
-                <LoopIcon/>
+                <LoopIcon />
               </IconButton>
             </Tooltip>
             <Search>
@@ -258,7 +245,10 @@ function App() {
         </ToggleButtonGroup>
       </Box>
       {gridview === "list" ? (
-        <TableContainer component={Paper} sx={{ paddingLeft: "16px", paddingRight: "16px"}}>
+        <TableContainer
+          component={Paper}
+          sx={{ paddingLeft: "16px", paddingRight: "16px" }}
+        >
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
@@ -271,7 +261,7 @@ function App() {
                 <TableCell align="left">Market cap</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody >
+            <TableBody>
               {isShow
                 ? filteredCoinsAll.map((coin) => {
                     return (
@@ -310,11 +300,11 @@ function App() {
           spacing={2}
           sx={{ paddingLeft: "16px", paddingRight: "16px" }}
         >
-          {filteredCoins.map((coin) => {
+          {filteredCoins.map((coin, index) => {
             return (
               <Grid item xs={3} md={2}>
                 <CoinGrid
-                  key={coin.id}
+                  key={index}
                   name={coin.name}
                   image={coin.image}
                   price={coin.current_price}
@@ -327,11 +317,11 @@ function App() {
         </Grid>
       ) : (
         <Grid container spacing={2}>
-          {filteredCoinsAll.map((coin) => {
+          {filteredCoinsAll.map((coin, index) => {
             return (
               <Grid item xs={3}>
                 <CoinGrid
-                  key={coin.id}
+                  key={index}
                   name={coin.name}
                   image={coin.image}
                   price={coin.current_price}
@@ -351,7 +341,6 @@ function App() {
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}
           rowsPerPageOptions={[]}
-          backIconButtonProps={{ className: theme.primary }}
           component="div"
         />
       ) : (
